@@ -1,0 +1,60 @@
+<project name="HX-Diagram" default="hxdiagram" basedir=".">
+
+    <path id="runtime.path">
+		<pathelement location="build/jar/CoolProp.jar"/>
+    	<pathelement location="build/jar/HumidAir.jar"/>
+    </path>
+
+    <path id="classpath">
+		<pathelement location="build/jar/CoolProp.jar"/>
+    </path>
+        	
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="cp-compile">
+        <mkdir dir="build/classes/CoolProp"/>
+        <javac srcdir="CoolProp" destdir="build/classes/CoolProp" includeantruntime="false" />
+    </target>
+
+    <target name="hair-compile"  depends="cp-jar">
+        <mkdir dir="build/classes/HumidAir"/>
+        <javac srcdir="HumidAir" destdir="build/classes/HumidAir" classpathref="classpath" includeantruntime="false" />
+    </target>
+        	
+    <target name="cp-jar" depends="cp-compile" >
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/CoolProp.jar" basedir="build/classes/CoolProp">
+            <manifest>
+                <attribute name="Built-By" value="CoolProp"/>
+                <attribute name="Implementation-Title" value="CoolProp"/>
+                <attribute name="Main-Class" value="Example"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="hair-jar" depends="hair-compile" >
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/HumidAir.jar" basedir="build/classes/HumidAir">
+            <manifest>
+                <attribute name="Built-By" value="Reiner Mayers"/>
+                <attribute name="Implementation-Title" value="HumidAir"/>
+                <attribute name="Main-Class" value="HXDiagram"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="hxdiagram" depends="hair-jar" >
+        <java classpathref="runtime.path" classname="HXDiagram" fork="true" />
+    </target>
+
+    <target name="cptest" depends="cp-jar">
+    	<java  classpathref="runtime.path" classname="Example" fork="true" />
+    </target>
+
+    <target name="airtest" depends="hair-jar">
+    	<java  classpathref="runtime.path" classname="TestHumidAir" fork="true" />
+    </target>
+
+</project>
