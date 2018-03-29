@@ -130,7 +130,7 @@ public class HXDiagram extends JPanel {
     		}
     	}
     	//
-    	System.out.println(Arrays.toString(isenthalpen) );
+    	System.out.println("Values for Isenthalps : " + Arrays.toString(isenthalpen) );
     	//
     	return isenthalpen;
     }
@@ -251,46 +251,14 @@ public class HXDiagram extends JPanel {
     public static IsoLine calculate_Isenthalp(double temperature, double AtmosphericPressure, double xmin, double xmax, double ymin, double ymax){
     	/**
     	/*  Returns the IsoLine for enthalpy
-    	/*  AtmosphericPressure in bar
+    	/*  Method needs to be implemented and Parameters need to be changed
     	 *  
     	 */
     	//
     	IsoLine il = new IsoLine();
     	//    	
-    	double[] xdata = new double[2];
-    	double[] ydata = new double[2];
-    	// Left side, Humidity Ratio = 0
-    	//
-		xdata[0] = 0.0;
-		ydata[0] = temperature * Constants.CP_AIR ;
-		il.add(xdata[0], ydata[0]);
-    	//(double)(i * stepSize)
-		xdata[1] = Air.HumidityRatio_p_t_phi(AtmosphericPressure,temperature,1);
-		if (xdata[1] > xmax ) {
-			// we are right side outside, use right side limit
-			xdata[1] = xmax ;
-			ydata[1] = Air.Enthalpy_p_t_x(AtmosphericPressure,temperature,xmax)-(double)(xdata[1]*Constants.R_0);
-		} else {
-			ydata[1] = Air.Enthalpy_p_t_phi(AtmosphericPressure,temperature,1)-(double)(xdata[1]*Constants.R_0);
-		}
-		if (ydata[1] > ymax ) {
-			// we are top outside, use top limit
-			// now some algebra
-			double slope = (ydata[1]-ydata[0])/(xdata[1]-xdata[0]);
-			double point = ydata[1] -(slope * xdata[1]);
-			//
-			ydata[1] = ymax ;
-			// for this y we need x
-			xdata[1] = ( ydata[1] - point ) / slope ;
-					
-		} 
-		
-		il.add(xdata[1], ydata[1]);
-		il.setColor(Color.RED);
+    	// TO BE IMPLEMENTED
 		//
-    	//String Label = new DecimalFormat(" #").format(rh *100.0);
-    	//String Label = (rh *100.0) + "";
-    	//il.setLabel(Label +"% ");
     	//
     	return il;
     }
