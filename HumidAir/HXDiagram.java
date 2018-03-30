@@ -181,15 +181,28 @@ public class HXDiagram extends JPanel {
     	//
     	// Now create datarange from min to max
     	// Numpy I miss you :)
-    	double xrange   = xmax - xmin ;
-    	int    steps    = 1000;
+    	double firstxrange   = 0.001 ;
+    	double xrange        = xmax - 0.001 ;
+    	System.out.println("calculate_RH_line :: xmax = "+ rh);
+    	int    steps    = 300;
+    	int firststeps  = 300;
+    	double firststepSize = (double)0.001/firststeps;
     	double stepSize = (double)xrange/steps;
     	
-    	double[] xdata = new double[steps];
-    	double[] ydata = new double[steps];
+    	double[] xdata = new double[steps+firststeps];
+    	double[] ydata = new double[steps+firststeps];
     	//
-    	for (int i = 0; i < xdata.length; i++) {
-    		xdata[i] = (double)(i * stepSize);
+    	// first gramm of water needs many points for the curve to look nice
+    	//
+    	for (int i = 0; i < firststeps; i++) {
+    		xdata[i] = (double)(i * firststepSize);
+    		ydata[i] = Air.Enthalpy_p_phi_x(AtmosphericPressure/100.0,rh,xdata[i])-(double)(xdata[i]*Constants.R_0);
+    		il.add(xdata[i], ydata[i]);
+    		//System.out.println("Werte x/y = "+xdata[i]+" / "+ ydata[i]);
+    	}    	
+    	//
+    	for (int i = firststeps+1; i < (steps+firststeps); i++) {
+    		xdata[i] = (double)((firststepSize * firststeps) + (stepSize*(i-firststeps)));
     		ydata[i] = Air.Enthalpy_p_phi_x(AtmosphericPressure/100.0,rh,xdata[i])-(double)(xdata[i]*Constants.R_0);
     		il.add(xdata[i], ydata[i]);
     		//System.out.println("Werte x/y = "+xdata[i]+" / "+ ydata[i]);
@@ -338,7 +351,7 @@ public class HXDiagram extends JPanel {
     	String Label = iLine.getLabel();
     	//
     	if ( LabelPos == 0 ){
-    		int LabelIndex = (int)( LastYIndex + FirstYIndex )/2;
+    		int LabelIndex = (int)(( LastYIndex + FirstYIndex )*0.7);
     		double dx = (x_plot_data[LabelIndex+1]-x_plot_data[LabelIndex-1]);
     		double dy = (y_plot_data[LabelIndex+1]-y_plot_data[LabelIndex-1]);
     		double rotation = Math.toDegrees( Math.atan2(dy, dx) );
