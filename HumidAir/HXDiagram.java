@@ -88,13 +88,14 @@ public class HXDiagram extends JPanel {
         //
         setupAxes(g2,XAxMin,XAxMax,YAxMin,YAxMax,XAxMajorTickDistance,YAxMajorTickDistance);
         //
-        CalculateIsolines(IsoLines);
+        //CalculateIsolines(IsoLines);
         //
         PlotIsolines(IsoLines,g2, (double)x_left,(double)x_right,(double)y_top,(double)y_bottom);
     }
 
     public static void CalculateIsolines(List<IsoLine> IsoLines){    
-        //
+    //public static void CalculateIsolines(){ 
+    	//
         for (int i = YAxMin; i < YAxMax ; i++) {
         	//System.out.println("IsoLine t : " + i);
         	IsoLines.add( calculate_Isothermal(i,AirPressure/100,hr_min,hr_max,(double)YAxMin,(double)YAxMax) );
@@ -480,7 +481,8 @@ public class HXDiagram extends JPanel {
     
     private static void createAndShowGui() {
 
-        HXDiagram mainPanel = new HXDiagram();
+        HXDiagram mainPanel 			= new HXDiagram();
+        mainPanel.CalculateIsolines(mainPanel.IsoLines);
         mainPanel.setPreferredSize(new Dimension(600, 900));
         JFrame frame = new JFrame("h,x Diagramm");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
