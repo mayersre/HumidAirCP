@@ -101,6 +101,11 @@ public class HXDiagram extends JPanel {
         	IsoLines.add( calculate_Isothermal(i,AirPressure/100,hr_min,hr_max,(double)YAxMin,(double)YAxMax) );
         }
         //
+        IsoLines.add( calculate_Isenthalp(50.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        IsoLines.add( calculate_Isenthalp(0.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        IsoLines.add( calculate_Isenthalp(-20.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        IsoLines.add( calculate_Isenthalp(60.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        //
         double[] rh_values = new double[] { 0.05, 0.1,0.15,0.2,0.25,0.3, 0.35, 0.4, 0.5,0.6,0.7,0.8,0.9,1.0 };
         for(double value : rh_values ) {
         	IsoLines.add( calculate_RH_line((double)value,hr_min,hr_max, AirPressure) );
@@ -262,7 +267,7 @@ public class HXDiagram extends JPanel {
     	return il;
     }
 
-    public static IsoLine calculate_Isenthalp(double temperature, double AtmosphericPressure, double xmin, double xmax, double ymin, double ymax){
+    public static IsoLine calculate_Isenthalp(double enthalpy, double pressure, double xmin, double xmax, double ymin, double ymax){
     	/**
     	/*  Returns the IsoLine for enthalpy
     	/*  Method needs to be implemented and Parameters need to be changed
@@ -270,9 +275,45 @@ public class HXDiagram extends JPanel {
     	 */
     	//
     	IsoLine il = new IsoLine();
-    	//    	
-    	// TO BE IMPLEMENTED
+    	//   
+    	// There are three types of isenthalps
+    	// Type one starts on th y axis and ends on the 100% line
+    	//
+    	// Type two starts on the top X-Axis and ends on the 100% Line
+    	//
+    	// Type three starts on the top X-Axis and ends on the right y-axis
+    	//
+    	double[] xdata = new double[2];
+    	double[] ydata = new double[2];
+    	// Left side, Humidity Ratio = 0
+    	//
+		xdata[0] = 0.0;
+		ydata[0] = enthalpy ;
+		il.add(xdata[0], ydata[0]);
 		//
+		xdata[1] = Air.HumidityRatio_p_h_phi(pressure,enthalpy,1.05);
+		//xdata[1] = 0.013;
+		ydata[1] = enthalpy-(double)(xdata[1]*Constants.R_0);
+		System.out.println(" xdata[1] : "+ xdata[1]);
+		System.out.println(" ydata[1] : "+ ydata[1]);
+		
+		//ydata[1] = 18;
+		//
+		if (ydata[1] > ymax ) {
+			// higher than Y max 
+			// we are right side outside, 
+			// use right side limit if x > xmax
+			System.out.println(" higher than Y max ");
+		} else {
+			// Y < Ymax
+
+		}
+		il.add(xdata[1], ydata[1]);
+		il.setColor(Color.BLUE);
+		//
+    	//String Label = new DecimalFormat(" #").format(rh *100.0);
+    	//String Label = (rh *100.0) + "";
+    	//il.setLabel(Label +"% ");
     	//
     	return il;
     }

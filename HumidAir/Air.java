@@ -61,6 +61,69 @@ public interface Air {
 	    	return x ;
 	    	}
 
+	    static public double HumidityRatio_p_h_phi(double pressure, double enthalpy, double relativehumidity ) {
+	        /**
+	         * Calculates the humidity ratio x in kg/kg using airpressure and enthalpy
+	         * of watergas
+	         * 
+	         * enthalpy            kJ/kg
+	         * airpressure         bar     airpressure in bar absolute
+	         * saturationpressure  pressure of saturated water
+	         */
+	    	double Error = 0 ;
+	    	//
+            int iterations_number=0;
+            boolean cont = true;
+            //
+            int iterations=0;
+            int maxiter = 100;
+            double xtol = 0.000001;
+            double x0=0.000;
+            double x1=0.000;
+            double h0=enthalpy;
+            double h1=enthalpy;
+            //
+            while (cont){
+                h1 = Enthalpy_p_phi_x(pressure,relativehumidity,x0);
+                iterations++;
+                if (h1 < enthalpy) {
+                	x0=x0+0.001;
+                } else {
+                	System.out.println(" h1 : "+ h1);
+                	System.out.println(" x0 : "+ x0);
+                	cont=false;
+                }
+            }
+            //
+            cont = true;
+            while (cont){
+                h1 = Enthalpy_p_phi_x(pressure,relativehumidity,x0);
+                iterations++;
+                if (h1 > enthalpy) {
+                	x0=x0-0.00001;
+                } else {
+                	System.out.println(" h1 : "+ h1);
+                	System.out.println(" x0 : "+ x0);
+                	cont=false;
+                }
+            }
+            //
+            cont = true;
+            while (cont){
+                h1 = Enthalpy_p_phi_x(pressure,relativehumidity,x0);
+                iterations++;
+                if (h1 < enthalpy) {
+                	x0=x0+0.0000001;
+                } else {
+                	System.out.println(" h1 : "+ h1);
+                	System.out.println(" x0 : "+ x0);
+                	cont=false;
+                }
+            }
+            //
+            return x0;
+	    	}
+    
 	    static public double EnthalpyDry(double pressure, double density) {
 	        /**
 	         * Takes pressure in bar absolute and density in kg/m³
