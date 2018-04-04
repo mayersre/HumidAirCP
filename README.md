@@ -34,7 +34,11 @@ Go to the HumidAirCP directory and run "ant hxdiagram"
 
 The Mollier Chart plots currently only Isothermals and Relative humidity lines, it
 was intended as a basic example on how to do it for students. However, there is
-progress on the isenthalp lines. Help would be great.
+progress on the isenthalp lines. 
+
+Some Isenthalp lines are plotted, but this is not ready yet
+
+Help would be great.
  
 No warranty, provided as is.
 
