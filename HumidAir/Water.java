@@ -9,7 +9,8 @@ import java.lang.*;
 public class Water {
 
 	static {
-        System.loadLibrary("CoolProp");
+        //System.loadLibrary("CoolProp");
+        System.load("/usr/lib/libCoolProp.so");
         System.out.println("CoolProp version:" + " " + CoolProp.get_global_param_string("version"));
         
     }

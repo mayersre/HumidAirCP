@@ -47,6 +47,7 @@
 
     <target name="hxdiagram" depends="hair-jar" >
         <java classpathref="runtime.path" classname="HXDiagram" fork="true" />
+    	
     </target>
 
     <target name="cptest" depends="cp-jar">

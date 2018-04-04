@@ -30,7 +30,7 @@ Import the Project to your eclipse workspace from git and run build.xml
 
 or
 
-Go to the HumidAirCP directory and run "ant Example HXDiagram"
+Go to the HumidAirCP directory and run "ant hxdiagram"
 
 The Mollier Chart plots currently only Isothermals and Relative humidity lines, it
 was intended as a basic example on how to do it for students. However, there is
