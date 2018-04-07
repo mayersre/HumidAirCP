@@ -101,10 +101,10 @@ public class HXDiagram extends JPanel {
         	IsoLines.add( calculate_Isothermal(i,AirPressure/100,hr_min,hr_max,(double)YAxMin,(double)YAxMax) );
         }
         //
-        IsoLines.add( calculate_Isenthalp(50.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
-        IsoLines.add( calculate_Isenthalp(0.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
-        IsoLines.add( calculate_Isenthalp(-20.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
-        IsoLines.add( calculate_Isenthalp(60.0, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        int[] enthalpies = new int[] { -20,-10,0, 10,20,30,40,50,60,70,80,90,100,110 };
+        for(int value : enthalpies ) {
+        	IsoLines.add( calculate_Isenthalp(value, AirPressure/100, XAxMin, XAxMax, YAxMin, YAxMax) );
+        }
         //
         double[] rh_values = new double[] { 0.05, 0.1,0.15,0.2,0.25,0.3, 0.35, 0.4, 0.5,0.6,0.7,0.8,0.9,1.0 };
         for(double value : rh_values ) {
@@ -112,33 +112,6 @@ public class HXDiagram extends JPanel {
         }
         //IsoLines.add( calculate_RH_line(1.0,hr_min,hr_max, AirPressure));
 
-    }
-
-    public static int[] calculate_isenthalp_values(double xmax, double ymin, double ymax, int steps) {
-    	//
-    	// calculate enthalpy top right
-    	int h_top_right =  (int)Math.round(ymax + xmax/1000 * Constants.R_0);
-    	// divide it by our enthalpy steps
-    	int x =  h_top_right % steps;
-    	h_top_right = h_top_right - x;
-    	// top right value div steps
-    	// now count number of lines
-    	int anzahl= (int)((h_top_right - ymin) / steps)+1;
-    	// create array of that size
-    	int[] isenthalpen = new int[anzahl];
-    	// fill array with appropriate values
-    	for (int i = 0 ; i < anzahl; i++) {
-    		if (i==0) {
-    			isenthalpen[i]=(int)ymin;
-    		} 
-    		else {
-    			isenthalpen[i]=(int)(ymin + steps * i);
-    		}
-    	}
-    	//
-    	System.out.println("Values for Isenthalps : " + Arrays.toString(isenthalpen) );
-    	//
-    	return isenthalpen;
     }
     
     public static void PlotIsolines(List<IsoLine> IsoLines,Graphics2D g2, double x_left, double x_right, double y_top, double y_bottom){ 
@@ -267,10 +240,38 @@ public class HXDiagram extends JPanel {
     	return il;
     }
 
+
+    public static int[] calculate_isenthalp_values(double xmax, double ymin, double ymax, int steps) {
+    	//
+    	// calculate enthalpy top right
+    	int h_top_right =  (int)Math.round(ymax + xmax/1000 * Constants.R_0);
+    	// divide it by our enthalpy steps
+    	int x =  h_top_right % steps;
+    	h_top_right = h_top_right - x;
+    	// top right value div steps
+    	// now count number of lines
+    	int anzahl= (int)((h_top_right - ymin) / steps)+1;
+    	// create array of that size
+    	int[] isenthalpen = new int[anzahl];
+    	// fill array with appropriate values
+    	for (int i = 0 ; i < anzahl; i++) {
+    		if (i==0) {
+    			isenthalpen[i]=(int)ymin;
+    		} 
+    		else {
+    			isenthalpen[i]=(int)(ymin + steps * i);
+    		}
+    	}
+    	//
+    	System.out.println("Values for Isenthalps : " + Arrays.toString(isenthalpen) );
+    	//
+    	return isenthalpen;
+    }
+
     public static IsoLine calculate_Isenthalp(double enthalpy, double pressure, double xmin, double xmax, double ymin, double ymax){
     	/**
     	/*  Returns the IsoLine for enthalpy
-    	/*  Method needs to be implemented and Parameters need to be changed
+    	/*  Method needs to be improved
     	 *  
     	 */
     	//
@@ -289,33 +290,72 @@ public class HXDiagram extends JPanel {
     	//
 		xdata[0] = 0.0;
 		ydata[0] = enthalpy ;
-		il.add(xdata[0], ydata[0]);
 		//
 		xdata[1] = Air.HumidityRatio_p_h_phi(pressure,enthalpy,1.05);
 		//xdata[1] = 0.013;
 		ydata[1] = enthalpy-(double)(xdata[1]*Constants.R_0);
-		System.out.println(" xdata[1] : "+ xdata[1]);
-		System.out.println(" ydata[1] : "+ ydata[1]);
+		//System.out.println(" xdata[1] : "+ xdata[1]);
+		//System.out.println(" ydata[1] : "+ ydata[1]);
 		
 		//ydata[1] = 18;
 		//
-		if (ydata[1] > ymax ) {
+		if (ydata[0] > ymax ) {
 			// higher than Y max 
-			// we are right side outside, 
-			// use right side limit if x > xmax
-			System.out.println(" higher than Y max ");
+			// we are left side outside, 
+			// use top limit if y > ymax
+			//System.out.println(" higher than Y max ");
+			
+			// linear interpolation for x0
+			xdata[0] = interpol_lin(ydata[0],ymax,ydata[1], xmin, xdata[1]);
+			ydata[0] = ymax ;
+			//System.out.println("xdata0 : " + xdata[0] + " ydata0 : " + ydata[0]);
+			//System.out.println("xdata1 : " + xdata[1] + " ydata1 : " + ydata[1]);
+			il.add(xdata[0], ydata[0]);
 		} else {
 			// Y < Ymax
-
+			il.add(xdata[0], ydata[0]);
 		}
-		il.add(xdata[1], ydata[1]);
+		//
+		System.out.println("xmax : " + xmax + " ymax : " + ymax);
+		System.out.println("xdata1 : " + xdata[1] + " ydata1 : " + ydata[1]);
+		if (xdata[1] > xmax/1000 ) {
+			// higher than x max 
+			// we are right side outside, 
+			// use right side limit if x > xmax
+			// linear interpolation for y1
+			System.out.println(" higher than x max ");
+			ydata[1] = interpol_lin(xdata[0],xmax/1000,xdata[1], ydata[0], ydata[1]);
+			System.out.println("xdata1 : " + xdata[1] + " ydata1 : " + ydata[1]);
+			xdata[1] = xmax/1000 ;
+			il.add(xdata[1], ydata[1]);
+		} else {
+			il.add(xdata[1], ydata[1]);
+		}
+		
+		
 		il.setColor(Color.BLUE);
 		//
-    	//String Label = new DecimalFormat(" #").format(rh *100.0);
+    	String Label = new DecimalFormat(" #").format(enthalpy);
     	//String Label = (rh *100.0) + "";
-    	//il.setLabel(Label +"% ");
+    	il.setLabel(Label +"% ");
     	//
     	return il;
+    }
+
+    public static void calculate_Isenthalps(List<IsoLine> IsoLines, double enthalpy, double pressure, double xmin, double xmax, double ymin, double ymax){
+    	/**
+    	/*  Claculates all Isenthalps
+    	/*  Method needs to be implemented
+    	 *  
+    	 *  First we calculate slope and point for one Isenthalp (ymax)
+    	 *  
+    	 *  With point and slope we can easily discover points on the edges
+    	 */
+    	//
+        //for(int enthalpy : isenthalps ) {
+        //	IsoLines.add( calculate_Isenthalp(enthalpy, AirPressure/100, xmin, xmax, ymin, ymax) );
+        //}
+    	//  
     }
 
     public static void plot_IsoLine(Graphics2D g,IsoLine iLine, double xmin, double xmax, double ymin, double ymax,
@@ -329,6 +369,8 @@ public class HXDiagram extends JPanel {
     	double[] ydata = iLine.getYdata() ;
     	Color plotcolor = iLine.getColor();
     	g.setColor(plotcolor);
+    	Stroke old_stroke=g.getStroke();
+    	g.setStroke(new BasicStroke(1));	
     	//
     	int datalength = xdata.length;
     	double[] x_plot_data = new double[datalength];
@@ -345,7 +387,7 @@ public class HXDiagram extends JPanel {
 			y_plot_data[0] = interpol_lin(ymax,ydata[0],ymin, y_top, y_bottom);
 			x_plot_data[1] = interpol_lin(xmin,xdata[1],xmax, x_left, x_right);
 			y_plot_data[1] = interpol_lin(ymax,ydata[1],ymin, y_top, y_bottom);
-			if (ydata[0] < ymax ) {
+			if (ydata[0] <= ymax ) {
 				g.draw(new Line2D.Double(x_plot_data[0], y_plot_data[0], x_plot_data[1], y_plot_data[1]));
 			}
     	} else {
@@ -407,6 +449,7 @@ public class HXDiagram extends JPanel {
     		; // no strategy yet 
     	}
     	}		
+    	g.setStroke(old_stroke); 
     	
     }
     

@@ -89,8 +89,8 @@ public interface Air {
                 if (h1 < enthalpy) {
                 	x0=x0+0.001;
                 } else {
-                	System.out.println(" h1 : "+ h1);
-                	System.out.println(" x0 : "+ x0);
+                	//System.out.println(" h1 : "+ h1);
+                	//System.out.println(" x0 : "+ x0);
                 	cont=false;
                 }
             }
@@ -102,8 +102,8 @@ public interface Air {
                 if (h1 > enthalpy) {
                 	x0=x0-0.00001;
                 } else {
-                	System.out.println(" h1 : "+ h1);
-                	System.out.println(" x0 : "+ x0);
+                	//System.out.println(" h1 : "+ h1);
+                	//System.out.println(" x0 : "+ x0);
                 	cont=false;
                 }
             }
@@ -115,8 +115,8 @@ public interface Air {
                 if (h1 < enthalpy) {
                 	x0=x0+0.0000001;
                 } else {
-                	System.out.println(" h1 : "+ h1);
-                	System.out.println(" x0 : "+ x0);
+                	//System.out.println(" h1 : "+ h1);
+                	//System.out.println(" x0 : "+ x0);
                 	cont=false;
                 }
             }
